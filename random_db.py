@@ -1,7 +1,5 @@
 from faker import Faker
 import random
-
-from database import DatabaseManager
 from library_statistics import LibraryService
 from objects import Author, Book
 

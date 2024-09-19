@@ -4,7 +4,7 @@ from random_db import Generate_DB
 
 NUM_BOOKS = 1000
 NUM_AUTHORS = 500
-INITIALIZE = False
+INITIALIZE = True
 
 
 def run_library_application():
