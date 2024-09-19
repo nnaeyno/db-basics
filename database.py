@@ -11,19 +11,19 @@ class DatabaseManager:
 
     def _create_tables(self):
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS authors (
-            author_id TEXT PRIMARY KEY,
             name TEXT,
             last_name TEXT,
             birth_year INT,
-            birth_place TEXT)''')
+            birth_place TEXT,
+            author_id TEXT PRIMARY KEY)''')
 
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS books (
-            book_id TEXT PRIMARY KEY,
             title TEXT,
             author_id TEXT,
             year INT,
             num_pages INT,
             genre TEXT,
+            book_id TEXT PRIMARY KEY,
             FOREIGN KEY(author_id) REFERENCES authors(author_id))''')
         self.connection.commit()
 
@@ -55,8 +55,25 @@ class BookRepository:
     def get_all_books(self):
         query = '''SELECT * FROM books'''
         self.db_manager.cursor.execute(query)
-        return self.db_manager.cursor.fetchall()
+        return self.db_manager.cursor.fetchone()
 
+    def find_most_pages(self):
+        query = """
+                SELECT * 
+                FROM books
+                ORDER BY num_pages DESC
+                LIMIT 1;
+                """
+        self.db_manager.cursor.execute(query)
+        return self.db_manager.cursor.fetchone()
+
+    def average_pages(self):
+        query = """
+               SELECT AVG(num_pages) as average_pages 
+               FROM books;
+               """
+        self.db_manager.cursor.execute(query)
+        return self.db_manager.cursor.fetchone()[0]
 
 class AuthorRepository:
     def __init__(self, db_manager: DatabaseManager):
@@ -76,5 +93,25 @@ class AuthorRepository:
 
     def get_all_authors(self):
         query = '''SELECT * FROM authors'''
+        self.db_manager.cursor.execute(query)
+        return self.db_manager.cursor.fetchall()
+
+    def get_youngest_author(self):
+        query = """
+                SELECT * 
+                FROM authors
+                ORDER BY birth_year DESC
+                LIMIT 1;
+                """
+        self.db_manager.cursor.execute(query)
+        return self.db_manager.cursor.fetchone()
+
+    def no_books(self):
+        query = """
+                SELECT a.*
+                FROM authors a
+                LEFT JOIN books b ON a.author_id = b.author_id
+                WHERE b.book_id IS NULL;
+                """
         self.db_manager.cursor.execute(query)
         return self.db_manager.cursor.fetchall()

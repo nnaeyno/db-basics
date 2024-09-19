@@ -1,6 +1,14 @@
 from database import BookRepository, AuthorRepository
 from objects import Author, Book
 
+"""
+განახორციელეთ შემდეგი მოქმედებები:
+    იპოვეთ და დაბეჭდეთ ყველაზე მეტი გვერდების მქონე წიგნის ყველა ველი
+    იპოვეთ და დაბეჭდეთ წიგნების საშუალო გვერდების რაოდენობა
+    დაბეჭდეთ ყველაზე ახალგაზრდა ავტორი
+    დაბეჭდეთ ისეთი ავტორები რომელსაც ჯერ წიგნი არ აქვს
+"""
+
 
 class LibraryService:
     def __init__(self, book_repository: BookRepository, author_repository: AuthorRepository):
@@ -26,3 +34,26 @@ class LibraryService:
 
     def get_all_authors(self):
         return self.author_repository.get_all_authors()
+
+    def get_most_pages(self) -> str:
+        book = Book(*self.book_repository.find_most_pages())
+        return (f"Book with most pages:\n       Book id: {book.book_id}, name: {book.title}, publishing year: {book.year}, "
+                f"author_id: {book.author_id}, genre: {book.genre}, number of pages: {book.num_pages}")
+
+    def get_average_pages(self) -> str:
+        return f"Average number of pages:\n     {self.book_repository.average_pages()}"
+
+    def get_youngest_author(self) -> str:
+        result = Author(*self.author_repository.get_youngest_author())
+        return f"Youngest Author:\n     {result.name} {result.last_name}"
+
+    def author_with_no_books(self) -> str:
+        result = self.author_repository.get_all_authors()
+        authors = f"Authors with no books:"
+        for author in result:
+            author = Author(*author)
+            authors += f"\n     {author.name} {author.last_name}"
+        return authors
+
+    def author_with_num_books(self, num_books: int) -> Author:
+        pass
