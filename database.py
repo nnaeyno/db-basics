@@ -115,3 +115,16 @@ class AuthorRepository:
                 """
         self.db_manager.cursor.execute(query)
         return self.db_manager.cursor.fetchall()
+
+    def author_with_num_books(self, num_books, limit):
+        query = f"""
+                SELECT a.*, COUNT(b.book_id) AS book_count
+                FROM authors a
+                JOIN books b ON a.author_id = b.author_id
+                GROUP BY a.author_id
+                HAVING COUNT(b.book_id) > {num_books}
+                ORDER BY book_count DESC
+                LIMIT {limit};
+                """
+        self.db_manager.cursor.execute(query)
+        return self.db_manager.cursor.fetchall()

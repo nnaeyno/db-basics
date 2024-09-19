@@ -48,12 +48,20 @@ class LibraryService:
         return f"Youngest Author:\n     {result.name} {result.last_name}"
 
     def author_with_no_books(self) -> str:
-        result = self.author_repository.get_all_authors()
+        result = self.author_repository.no_books()
         authors = f"Authors with no books:"
         for author in result:
             author = Author(*author)
             authors += f"\n     {author.name} {author.last_name}"
         return authors
 
-    def author_with_num_books(self, num_books: int) -> Author:
-        pass
+    def author_with_num_books(self, num_books: int, num_authors: int) -> str:
+        result = self.author_repository.author_with_num_books(num_books, num_authors)
+        authors = f"{num_authors} Author(s) with more than {num_books} book(s):"
+        for author in result:
+            num_books = author[-1]
+            author = author[:-1]
+            author = Author(*author)
+            authors += f"\n     {author.name} {author.last_name} with {num_books} book(s)"
+        return authors
+
