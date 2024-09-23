@@ -1,9 +1,10 @@
 import sqlite3
 
+from database_interfaces import IDatabaseManager, IAuthorRepository, IBookRepository
 from objects import Book, Author
 
 
-class DatabaseManager:
+class SQLiteDatabaseManager(IDatabaseManager):
     def __init__(self, db_name: str = 'library.db'):
         self.connection = sqlite3.connect(db_name)
         self.cursor = self.connection.cursor()
@@ -31,15 +32,17 @@ class DatabaseManager:
         self.connection.close()
 
 
-class BookRepository:
-    def __init__(self, db_manager: DatabaseManager):
+class BookRepository(IBookRepository):
+    def __init__(self, db_manager: SQLiteDatabaseManager):
         self.db_manager = db_manager
 
     def add_book(self, book: Book):
         query = '''INSERT INTO books (book_id, title, author_id, year, num_pages, genre)
                    VALUES (?, ?, ?, ?, ?, ?)'''
         self.db_manager.cursor.execute(query,
-            (book.book_id, book.title, book.author_id, book.year, book.num_pages, book.genre))
+                                       (
+                                           book.book_id, book.title, book.author_id, book.year, book.num_pages,
+                                           book.genre))
         self.db_manager.connection.commit()
 
     def get_books_by_author(self, author_id: str):
@@ -65,7 +68,7 @@ class BookRepository:
                 LIMIT 1;
                 """
         self.db_manager.cursor.execute(query)
-        return self.db_manager.cursor.fetchone()
+        return Book(*self.db_manager.cursor.fetchone())
 
     def average_pages(self):
         query = """
@@ -75,15 +78,18 @@ class BookRepository:
         self.db_manager.cursor.execute(query)
         return self.db_manager.cursor.fetchone()[0]
 
-class AuthorRepository:
-    def __init__(self, db_manager: DatabaseManager):
+
+class AuthorRepository(IAuthorRepository):
+    def __init__(self, db_manager: SQLiteDatabaseManager):
         self.db_manager = db_manager
+
 
     def add_author(self, author: Author):
         query = '''INSERT INTO authors (author_id, name, last_name, birth_year, birth_place)
                    VALUES (?, ?, ?, ?, ?)'''
         self.db_manager.cursor.execute(query,
-            (author.author_id, author.name, author.last_name, author.birth_year, author.birth_place))
+                                       (author.author_id, author.name, author.last_name, author.birth_year,
+                                        author.birth_place))
         self.db_manager.connection.commit()
 
     def get_author_by_id(self, author_id: str):
@@ -104,7 +110,7 @@ class AuthorRepository:
                 LIMIT 1;
                 """
         self.db_manager.cursor.execute(query)
-        return self.db_manager.cursor.fetchone()
+        return Author(*self.db_manager.cursor.fetchone())
 
     def no_books(self):
         query = """
@@ -114,7 +120,8 @@ class AuthorRepository:
                 WHERE b.book_id IS NULL;
                 """
         self.db_manager.cursor.execute(query)
-        return self.db_manager.cursor.fetchall()
+        res = self.db_manager.cursor.fetchall()
+        return map(lambda author: Author(*author), res)
 
     def author_with_num_books(self, num_books, limit):
         query = f"""
@@ -127,4 +134,11 @@ class AuthorRepository:
                 LIMIT {limit};
                 """
         self.db_manager.cursor.execute(query)
-        return self.db_manager.cursor.fetchall()
+        result = self.db_manager.cursor.fetchall()
+        authors = []
+        for author in result:
+            num_books = author[-1]
+            author = author[:-1]
+            author = Author(*author)
+            authors.append((author, num_books))
+        return authors
