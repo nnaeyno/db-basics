@@ -1,22 +1,24 @@
 from typing import Any
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship, sessionmaker, declarative_base
+
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
 
 class Book(Base):
     """წიგნის უნდა ქონდეს შემდეგი ველები:
-        ID (primary key)
-        დასახელება
-        კატეგორიის დასახელება
-        გვერდების რაოდენობა
-        გამოცემის თარიღი
-        ავტორის აიდი
+    ID (primary key)
+    დასახელება
+    კატეგორიის დასახელება
+    გვერდების რაოდენობა
+    გამოცემის თარიღი
+    ავტორის აიდი
     """
-    __tablename__ = 'books'
+
+    __tablename__ = "books"
     book_id = Column(String, primary_key=True)
-    author_id = Column(String, ForeignKey('authors.author_id'), nullable=False)
+    author_id = Column(String, ForeignKey("authors.author_id"), nullable=False)
     title = Column(String, nullable=False)
     year = Column(Integer, nullable=False)
     num_pages = Column(Integer, nullable=False)
@@ -25,8 +27,16 @@ class Book(Base):
     # Relationship to Author model (many-to-one)
     author = relationship("Author", back_populates="books")
 
-    def __init__(self, title: str, author_id: str, year: int, num_pages: int, genre: str, book_id: str = None,
-                 **kw: Any) -> None:
+    def __init__(
+        self,
+        title: str,
+        author_id: str,
+        year: int,
+        num_pages: int,
+        genre: str,
+        book_id: str = None,
+        **kw: Any
+    ) -> None:
         super().__init__(**kw)
         self.book_id = book_id
         self.author_id = author_id
@@ -38,13 +48,14 @@ class Book(Base):
 
 class Author(Base):
     """ავტორს უნდა ქონდეს შემდეგი ველები
-        ID (primary key)
-        სახელი
-        გვარი
-        დაბადების თარიღი
-        დაბადების ადგილი
+    ID (primary key)
+    სახელი
+    გვარი
+    დაბადების თარიღი
+    დაბადების ადგილი
     """
-    __tablename__ = 'authors'
+
+    __tablename__ = "authors"
     author_id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
@@ -54,8 +65,15 @@ class Author(Base):
     # Relationship to Book model (one-to-many)
     books = relationship("Book", back_populates="author")
 
-    def __init__(self, name: str, last_name: str, birth_year: int, birth_place: str, author_id: str = None,
-                 **kw: Any) -> None:
+    def __init__(
+        self,
+        name: str,
+        last_name: str,
+        birth_year: int,
+        birth_place: str,
+        author_id: str = None,
+        **kw: Any
+    ) -> None:
         super().__init__(**kw)
         self.author_id = author_id
         self.name = name

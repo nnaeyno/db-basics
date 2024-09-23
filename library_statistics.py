@@ -1,4 +1,3 @@
-from sqlite_db import BookRepository, AuthorRepository
 from database_interfaces import IAuthorRepository, IBookRepository
 from objects import Author, Book
 
@@ -12,15 +11,32 @@ from objects import Author, Book
 
 
 class LibraryService:
-    def __init__(self, book_repository: IBookRepository, author_repository: IAuthorRepository):
+    def __init__(
+        self, book_repository: IBookRepository, author_repository: IAuthorRepository
+    ):
         self.book_repository = book_repository
         self.author_repository = author_repository
 
-    def add_author(self, name: str, last_name: str, birth_year: int, birth_place: str, author_id: str):
+    def add_author(
+        self,
+        name: str,
+        last_name: str,
+        birth_year: int,
+        birth_place: str,
+        author_id: str,
+    ):
         author = Author(name, last_name, birth_year, birth_place, author_id)
         self.author_repository.add_author(author)
 
-    def add_book(self, title: str, author_id: str, year: int, num_pages: int, genre: str, book_id: str):
+    def add_book(
+        self,
+        title: str,
+        author_id: str,
+        year: int,
+        num_pages: int,
+        genre: str,
+        book_id: str,
+    ):
         if self.author_repository.get_author_by_id(author_id) is None:
             raise ValueError(f"Author with id {author_id} does not exist.")
 
@@ -38,8 +54,10 @@ class LibraryService:
 
     def get_most_pages(self) -> str:
         book = self.book_repository.find_most_pages()
-        return (f"Book with most pages:\n       Book id: {book.book_id}, name: {book.title}, publishing year: {book.year}, "
-                f"author_id: {book.author_id}, genre: {book.genre}, number of pages: {book.num_pages}")
+        return (
+            f"Book with most pages:\n       Book id: {book.book_id}, name: {book.title}, publishing year: {book.year}, "
+            f"author_id: {book.author_id}, genre: {book.genre}, number of pages: {book.num_pages}"
+        )
 
     def get_average_pages(self) -> str:
         return f"Average number of pages:\n     {self.book_repository.average_pages()}"
@@ -50,7 +68,7 @@ class LibraryService:
 
     def author_with_no_books(self) -> str:
         result = self.author_repository.no_books()
-        authors = f"Authors with no books:"
+        authors = "Authors with no books:"
         for author in result:
             authors += f"\n     {author.name} {author.last_name}"
         return authors
@@ -60,6 +78,7 @@ class LibraryService:
         authors = f"{num_authors} Author(s) with more than {num_books} book(s):"
         for author in result:
             author, num_books = author
-            authors += f"\n     {author.name} {author.last_name} with {num_books} book(s)"
+            authors += (
+                f"\n     {author.name} {author.last_name} with {num_books} book(s)"
+            )
         return authors
-

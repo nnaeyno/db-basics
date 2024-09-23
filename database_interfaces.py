@@ -5,6 +5,12 @@ class IDatabaseManager:
     def close(self):
         pass
 
+    def get_connection(self):
+        pass
+
+    def commit(self):
+        pass
+
 
 class IAuthorRepository:
 

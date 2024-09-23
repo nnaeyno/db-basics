@@ -1,5 +1,7 @@
-from faker import Faker
 import random
+
+from faker import Faker
+
 from library_statistics import LibraryService
 from objects import Author, Book
 
@@ -19,8 +21,16 @@ def generate_authors(num_authors: int):
 
 
 def generate_books(authors: list, num_books: int):
-    genres = ["Science Fiction", "Fantasy", "Dystopian", "Mystery", "Romance", "Non-fiction", "Thriller",
-              "Historical"]
+    genres = [
+        "Science Fiction",
+        "Fantasy",
+        "Dystopian",
+        "Mystery",
+        "Romance",
+        "Non-fiction",
+        "Thriller",
+        "Historical",
+    ]
     books = []
     for _ in range(num_books):
         title = fake.sentence(nb_words=3)
@@ -39,12 +49,23 @@ class Generate_DB:
 
     def store_authors_books(self, authors, books):
         for author in authors:
-            self.library_service.add_author(author.name, author.last_name, author.birth_year, author.birth_place,
-                                            author.author_id)
+            self.library_service.add_author(
+                author.name,
+                author.last_name,
+                author.birth_year,
+                author.birth_place,
+                author.author_id,
+            )
 
         for book in books:
-            self.library_service.add_book(book.title, book.author_id, book.year, book.num_pages, book.genre,
-                                          book.book_id)
+            self.library_service.add_book(
+                book.title,
+                book.author_id,
+                book.year,
+                book.num_pages,
+                book.genre,
+                book.book_id,
+            )
 
     def generate_and_store_data(self, num_authors: int, num_books: int):
         # Generate 500 authors and 1000 books
