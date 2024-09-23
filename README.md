@@ -34,6 +34,7 @@ This project provides a database system that stores information about Books and 
 * SQLite (or any other supported SQL database)
 * Libraries:
   * sqlite3 (for database management)
+  * sqlalchemy (for database management)
   * random (for generating test data)
   * faker (for fake data)
 

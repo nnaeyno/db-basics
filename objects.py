@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship, sessionmaker, declarative_base
 
 Base = declarative_base()
 
+
 class Book(Base):
     """წიგნის უნდა ქონდეს შემდეგი ველები:
         ID (primary key)
@@ -23,6 +24,7 @@ class Book(Base):
 
     # Relationship to Author model (many-to-one)
     author = relationship("Author", back_populates="books")
+
     def __init__(self, title: str, author_id: str, year: int, num_pages: int, genre: str, book_id: str = None,
                  **kw: Any) -> None:
         super().__init__(**kw)
@@ -35,7 +37,6 @@ class Book(Base):
 
 
 class Author(Base):
-
     """ავტორს უნდა ქონდეს შემდეგი ველები
         ID (primary key)
         სახელი
@@ -61,5 +62,3 @@ class Author(Base):
         self.last_name = last_name
         self.birth_year = birth_year
         self.birth_place = birth_place
-
-

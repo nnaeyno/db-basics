@@ -47,4 +47,4 @@ def run_library_application_alchemy():
 
 if __name__ == '__main__':
     run_library_application_alchemy()
-    # run_library_application()
+    run_library_application()
