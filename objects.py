@@ -15,8 +15,8 @@ class Book(Base):
     """
     __tablename__ = 'books'
     book_id = Column(String, primary_key=True)
-    title = Column(String, nullable=False)
     author_id = Column(String, ForeignKey('authors.author_id'), nullable=False)
+    title = Column(String, nullable=False)
     year = Column(Integer, nullable=False)
     num_pages = Column(Integer, nullable=False)
     genre = Column(String, nullable=False)

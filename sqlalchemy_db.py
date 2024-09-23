@@ -6,9 +6,9 @@ from objects import Author, Base, Book
 
 
 class SQLAlchemyDatabaseManager(IDatabaseManager):
-    def __init__(self):
+    def __init__(self, db_name: str = 'library.db'):
         # Set up the SQLite database
-        self.engine = create_engine('sqlite:///library_a.db')
+        self.engine = create_engine(f'sqlite:///{db_name}')
         Base.metadata.create_all(self.engine)
 
         # Create a session
