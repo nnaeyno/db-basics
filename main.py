@@ -7,7 +7,7 @@ from sqlalchemy_db import (
 )
 from sqlite_db import AuthorRepository, BookRepository, SQLiteDatabaseManager
 
-NUM_BOOKS = 1000
+NUM_BOOKS = 1500
 NUM_AUTHORS = 500
 INITIALIZE = True
 
